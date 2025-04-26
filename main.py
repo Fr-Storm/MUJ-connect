@@ -27,9 +27,9 @@ bot = commands.Bot(command_prefix=".", intents=intents)
 
 @bot.event
 async def on_ready():
-    guild = discord.Object(id=1365276830524772362)
-    await bot.tree.sync(guild = guild)              #global sync takes over an hour to sync
-    # await bot.tree.sync()                        #uncomment this line to sync globally
+    # guild = discord.Object(id=1365276830524772362)
+    # await bot.tree.sync(guild = guild)              #global sync takes over an hour to sync
+    await bot.tree.sync()                        #uncomment this line to sync globally
     await bot.change_presence(activity=discord.Game(name="with the API"))
     print(f'We have logged in as {bot.user}')
 
