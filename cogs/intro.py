@@ -66,13 +66,6 @@ class Intro(commands.Cog):
 
         member = interaction.user
 
-        # Correct get_role function
-        # def get_matching_role(possible_roles):
-        #     for role in member.roles:
-        #         if role.name in possible_roles:
-        #             return role.name
-        #     return "Role not found"
-
         def get_matching_roles(possible_roles):
             matching = [role.name for role in member.roles if role.name in possible_roles]
             return matching if matching else ["Not Found"]
@@ -105,15 +98,11 @@ class Intro(commands.Cog):
                 role = discord.utils.get(member.guild.roles, name=role_name)
                 if role and role not in member.roles:
                     hobby_roles_to_add.append(role)
-        #Add if they were found
+
         if hobby_roles_to_add:
             await member.add_roles(*hobby_roles_to_add)
-          
-        if hobby_roles_to_add:
-            hobbies_display = ", ".join(hobby_list) if hobby_list else "None Selected"
-            await interaction.foloowup.send(f"Roles added: {role_name}", ephemeral=True)
-        else:
-            hobbies_display = ("No roles were added, but hobbies were recorded.")
+
+        hobbies_display = ", ".join(hobby_list) if hobby_list else "None Selected"
 
         # Set nickname
         try:
