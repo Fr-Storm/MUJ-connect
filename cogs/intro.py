@@ -1,8 +1,38 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+import json
+import os
+from discord.ext import tasks
 
 Intro_channel_id = 1364883858146984057  # 📇intro channel id
+intro_data_file = "intro_data.json"
+
+async def save_intro_message(guild_id, user_id, message_id):
+    """Save the intro message ID to a JSON file."""
+    if os.path.exists(intro_data_file):
+        data = {}
+    else:
+        with open(intro_data_file, "r") as f:
+            data = json.load(f)
+    
+    if str(guild_id) not in data:
+        data[str(guild_id)] = {}
+    
+    data[str(guild_id)][str(user_id)] = message_id
+
+    with open(intro_data_file, "w") as f:
+        json.dump(data, f, intend = 4)
+
+async def get_intro_message(guild_id, user_id):
+    """Get the intro message ID from the JSON file."""
+    if not os.path.exists(intro_data_file):
+        return None
+    
+    with open(intro_data_file, "r") as f:
+        data = json.load(f)
+
+    return data.get(str(guild_id), {}).get(str(user_id))
 
 # Mapping hobbies to role names
 Hobby_Roles = {
@@ -36,6 +66,13 @@ class Intro(commands.Cog):
 
         member = interaction.user
 
+        # Correct get_role function
+        # def get_matching_role(possible_roles):
+        #     for role in member.roles:
+        #         if role.name in possible_roles:
+        #             return role.name
+        #     return "Role not found"
+
         def get_matching_roles(possible_roles):
             matching = [role.name for role in member.roles if role.name in possible_roles]
             return matching if matching else ["Not Found"]
@@ -45,11 +82,11 @@ class Intro(commands.Cog):
         batch_roles = ['Batch-5', 'Batch-6', 'Batch-7', 'Batch-8', 'Batch-9', 'Batch-10', '2022', '2023', '2024', '2025']
         specialization_roles = ['Bca Core', 'Web dev', 'AI-ML', 'Cyber Security', 'Cloud Computing', 'Data Science']
 
-        # Gender handling   
+        # Gender handling
         gender = "Not Provided"
-        if any(role.name == "Mummy ka 🐊" for role in member.roles):  #This is Male              (I blame the guy who asked me to make this bot for these names)
+        if any(role.name == "Mummy ka 🐊" for role in member.roles):
             gender = "Mummy ka 🐊"
-        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):   #This is Female
+        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):
             gender = "Papa ki 🧚🏻"
 
         # Find roles
@@ -105,10 +142,74 @@ class Intro(commands.Cog):
         # Send intro
         intro_channel = interaction.guild.get_channel(Intro_channel_id)
         if intro_channel:
-            await intro_channel.send(embed=embed)
+            intro_message = await intro_channel.send(embed=embed)
+            await save_intro_message(interaction.guild.id, member.id, intro_message.id)
             await interaction.followup.send("Your introduction has been successfully sent! ✅", ephemeral=True)
         else:
             await interaction.followup.send("Whoops, Intro channel not found!❌ Let the admin know.", ephemeral=True)
+            
+            
+            '''Updating intro message on role change'''
+        @commands.Cog.listener()
+        async def on_member_update(self, before, after):
+            if before.roles == after.roles:
+                return  # No role changes, ignore
+
+            intro_message_id = await get_intro_message(after.guild.id, after.id)
+            if not intro_message_id:
+                return  # No intro message to edit
+
+            # Rebuild the embed
+            gender = "Not Provided"
+            if any(role.name == "Mummy ka 🐊" for role in after.roles):
+                gender = "Male"
+            elif any(role.name == "Papa ki 🧚🏻" for role in after.roles):
+                gender = "Female"
+
+            # Similar logic for age, batch, specialization
+            age = get_matching_roles(after, ['18', '19', '20', '21', '22', '23', '24'])
+            batch = get_matching_roles(after, ['Batch-5', 'Batch-6', 'Batch-7', 'Batch-8', 'Batch-9', 'Batch-10', '2022', '2023', '2024', '2025'])
+            specialization = get_matching_roles(after, ['Bca Core', 'Web dev', 'AI-ML', 'Cyber Security', 'Cloud Computing', 'Data Science'])
+
+            intro_channel = after.guild.get_channel(Intro_channel_id)
+            if intro_channel is None:
+                return
+
+            try:
+                message = await intro_channel.fetch_message(intro_message_id)
+
+                # Rebuild the embed
+                updated_embed = discord.Embed(
+                    title="📇Member introduction",
+                    color=discord.Color.blurple()
+                )
+                updated_embed.set_thumbnail(url=after.avatar.url)
+                updated_embed.add_field(name="👋 Name", value=after.display_name, inline=False)
+                updated_embed.add_field(name="🎂 Age", value=", ".join(age) if age else "Not Found", inline=True)
+                updated_embed.add_field(name="🚻 Gender", value=gender, inline=True)
+                updated_embed.add_field(name="🛠️ Specialisation", value=", ".join(specialization) if specialization else "Not Found", inline=False)
+                updated_embed.add_field(name="🏫 Year", value=", ".join(batch) if batch else "Not Found", inline=True)
+                updated_embed.add_field(name="🎯 Hobbies", value="(No hobbies update)", inline=False)
+                updated_embed.add_field(name="🌐 Socials", value="(No socials update)", inline=False)
+                updated_embed.set_footer(text = f"Welcome to the server {after.display_name}!")
+
+                await message.edit(embed=updated_embed)
+
+            except discord.NotFound:
+                pass  # Message might have been deleted
+            except Exception as e:
+                print(f"Failed to update intro: {e}")
+
+        # Helper for multiple roles
+        def get_matching_roles(member, role_names):
+            return [role.name for role in member.roles if role.name in role_names]        
+        
+
+
+
+
+
+
 
 async def setup(bot):
     await bot.add_cog(Intro(bot))
