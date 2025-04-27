@@ -101,15 +101,19 @@ class Intro(commands.Cog):
 
         for hobby in hobby_list:
             role_name = Hobby_Roles.get(hobby)
-            if role_name:
+            if role_name: #only process hobby if corresponding role exists
                 role = discord.utils.get(member.guild.roles, name=role_name)
                 if role and role not in member.roles:
                     hobby_roles_to_add.append(role)
-
+        #Add if they were found
         if hobby_roles_to_add:
             await member.add_roles(*hobby_roles_to_add)
-
-        hobbies_display = ", ".join(hobby_list) if hobby_list else "None Selected"
+          
+        if hobby_roles_to_add:
+            hobbies_display = ", ".join(hobby_list) if hobby_list else "None Selected"
+            await interaction.foloowup.send(f"Roles added: {role_name}", ephemeral=True)
+        else:
+            hobbies_display = ("No roles were added, but hobbies were recorded.")
 
         # Set nickname
         try:
