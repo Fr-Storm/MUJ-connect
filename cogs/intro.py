@@ -23,7 +23,7 @@ class Intro(commands.Cog):
     @app_commands.describe(
         name='Your name',
         socials="Your social media IDs",
-        hobbies="List your hobbies separated by commas (e.g. Gaming, Developer, Artist)"
+        hobbies="List your hobbies separated by commas (e.g. Gaming, Developer, Artist, Cooking, Rider, Writer, Musician)"
     )
     async def intro(
         self, 
@@ -36,13 +36,6 @@ class Intro(commands.Cog):
 
         member = interaction.user
 
-        # Correct get_role function
-        # def get_matching_role(possible_roles):
-        #     for role in member.roles:
-        #         if role.name in possible_roles:
-        #             return role.name
-        #     return "Role not found"
-
         def get_matching_roles(possible_roles):
             matching = [role.name for role in member.roles if role.name in possible_roles]
             return matching if matching else ["Not Found"]
@@ -52,11 +45,11 @@ class Intro(commands.Cog):
         batch_roles = ['Batch-5', 'Batch-6', 'Batch-7', 'Batch-8', 'Batch-9', 'Batch-10', '2022', '2023', '2024', '2025']
         specialization_roles = ['Bca Core', 'Web dev', 'AI-ML', 'Cyber Security', 'Cloud Computing', 'Data Science']
 
-        # Gender handling
+        # Gender handling   
         gender = "Not Provided"
-        if any(role.name == "Mummy ka 🐊" for role in member.roles):  #This is for male (I blame the guy who asked me to make the bot for this)
+        if any(role.name == "Mummy ka 🐊" for role in member.roles):  #This is Male              (I blame the guy who asked me to make this bot for these names)
             gender = "Mummy ka 🐊"
-        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):   #This is for female
+        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):   #This is Female
             gender = "Papa ki 🧚🏻"
 
         # Find roles
