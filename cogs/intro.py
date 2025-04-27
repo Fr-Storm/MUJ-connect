@@ -54,9 +54,9 @@ class Intro(commands.Cog):
 
         # Gender handling
         gender = "Not Provided"
-        if any(role.name == "Mummy ka 🐊" for role in member.roles):
+        if any(role.name == "Mummy ka 🐊" for role in member.roles):  #This is for male (I blame the guy who asked me to make the bot for this)
             gender = "Mummy ka 🐊"
-        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):
+        if any(role.name == "Papa ki 🧚🏻" for role in member.roles):   #This is for female
             gender = "Papa ki 🧚🏻"
 
         # Find roles
