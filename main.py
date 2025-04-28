@@ -24,7 +24,7 @@ intents.members = True
 class MyBot(commands.Bot):
     async def on_ready(self):
         print(f"Syncing commands to guild...")
-        guild = discord.Object(id=1364880687185788950) #guild ID
+        guild = discord.Object(id=) #Add your guild ID here
         await self.tree.sync(guild=guild)
         # Uncomment for global sync (takes longer)
         await self.tree.sync()
