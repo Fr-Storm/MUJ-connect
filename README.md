@@ -2,30 +2,34 @@
 ## Welcome to Muj Connect — a custom Discord bot that automatically formats beautiful introduction posts for new server members based on their selected roles and inputs!
 
 ## ✨ Features
-- 📜 Slash Command /intro to introduce yourself.
+- 📜 Slash Command `/intro` to introduce yourself.
 
 - 🧩 Reads user roles (Age, Gender, Specialization, Year) from onboarding selections.
 
-- 🎨 Posts a clean, styled embed in the #📇intro channel.
+- 🎨 Posts a clean, styled embed in the `#📇intro channel`.
 
 - 🎭 Changes your nickname to your real name (if bot has permissions).
 
 - 🎯 Assigns hobby roles based on your chosen interests (Gaming, Developer, Rider, etc.).
+  
+- 🔥 Slash Command `/assign` to assign gender roles manually with permission checks.
+
+- 🛡️ `/assign` command restricted to users with Manage Nicknames permission.
 
 - ⚡ Fully automatic, quick, and easy to use.
 
 ## 🚀 How It Works
 1. On server join, users select roles (Age, Gender, Specialization, Batch) during onboarding.
 
-2. User uses /intro command and fills in:
+2. User uses `/intro` command and fills in:
 
 - Name
 
-- Social links (Instagram, Snapchat, etc.)
+- Social usernames (Instagram, Snapchat, etc.)
 
 - Hobbies
 
-3. Bot reads their roles and information, generates a stylish embed, and posts it to #📇intro!
+3. Bot reads their roles and information, generates a stylish embed, and posts it to `#📇intro`!
 
 4. If hobbies match certain keywords, bot auto-assigns the hobby role.
 
@@ -46,7 +50,7 @@ Hosting server (optional: replit / glitch / render)
 git clone https://github.com/your-repo/muj-connect.git
 cd muj-connect
 ```
-2. Creating a .venv is highly recommended.
+2. Create and activate a virtual environment (optional but recommended).
    
 3. Install dependencies:
 ```
@@ -77,7 +81,8 @@ python main.py
 ## 🛠️ File Structure
 ```
 /cogs
-  └── intro.py     # Cog for intro slash command
+  ├── intro.py     # /intro command (user intro system)
+  └── assign.py    # /assign command (gender role assignment)
 main.py            # Bot entry point
 webserver.py       # (Optional) For hosting
 .env               # Secret bot token
@@ -93,8 +98,16 @@ README.md          # This file
 
 - Send Messages / Embed Links
 
-2. Bot cannot change nickname of the server owner or roles higher than itself (Discord restriction).
+2. The bot cannot change the nickname of the server owner or roles higher than itself.
 
-3. This bot works inside a specific guild for faster command syncing. So, don't forget to change `guild` Id and `Intro_channel_Id` in the code.
+3. `/assign` command:
+
+- Only members with the Manage Nicknames permission can use it.
+
+- If a user already has a gender role, they cannot be assigned another.
+
+- Gives an error if the user tries to use it without permissions.
+
+4. This bot is designed for a specific server. Don't forget to update `Roles in Server/Code`, `guild IDs`, and `channel IDs` properly!
 
 ## Made by yours truly, with ❤ 
