@@ -4,7 +4,7 @@ from discord import app_commands
 import json
 import os
 
-Intro_channel_id = 1364883858146984057  # Your intro channel ID
+Intro_channel_id =   # Put your intro channel ID here
 
 # Helper to get intro message ID
 async def get_intro_message(guild_id, user_id):
@@ -33,14 +33,14 @@ class Assign(commands.Cog):
         message_id="Optional (but preferred): Message ID of intro embed (if not provided, bot will auto find)"
     )
     @app_commands.choices(gender_role=[
-        app_commands.Choice(name="Mummy ka 🐊", value="Mummy ka 🐊"),
-        app_commands.Choice(name="Papa ki 🧚🏻", value="Papa ki 🧚🏻")
+        app_commands.Choice(name="Male", value="Male"),
+        app_commands.Choice(name="Female", value="Female")
     ])
     async def assign(self, interaction: discord.Interaction, user: discord.Member, gender_role: app_commands.Choice[str], message_id: str = None):
         await interaction.response.defer(ephemeral=True)
 
         # Prevent giving second gender role
-        conflicting_roles = ["Mummy ka 🐊", "Papa ki 🧚🏻"]
+        conflicting_roles = ["Male", "Female"]
         user_current_gender_roles = [r.name for r in user.roles if r.name in conflicting_roles]
 
         if user_current_gender_roles:
