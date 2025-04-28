@@ -4,9 +4,9 @@ from discord import app_commands
 import json
 import os
 
-Intro_channel_id = 1364883858146984057  # 📇 intro channel ID
+Intro_channel_id =   # Put your intro channel ID here
 
-# Hobby -> Role Mapping
+# Hobby -> Role Mapping (Change them as per your need)
 Hobby_Roles = {
     'Gaming': "Gamer",
     'Developing': "Developer",
@@ -77,10 +77,10 @@ class Intro(commands.Cog):
 
         # Gender detection
         gender = "Not Provided"
-        if any(role.name == "Mummy ka 🐊" for role in member.roles):
-            gender = "Mummy ka 🐊"
-        elif any(role.name == "Papa ki 🧚🏻" for role in member.roles):
-            gender = "Papa ki 🧚🏻"
+        if any(role.name == "Male" for role in member.roles):
+            gender = "Male"
+        elif any(role.name == "Female" for role in member.roles):
+            gender = "Female"
 
         # Get roles
         age = get_matching_roles(member, age_roles)
